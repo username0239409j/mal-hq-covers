@@ -3,11 +3,15 @@
 
 Usage:
     python make_hq.py animelist.xml mangalist.xml [-o hq.css]
+    python make_hq.py --user THEIR_USERNAME [-o hq.css]
+    python make_hq.py --anime anime.html --manga manga.html [-o hq.css]
 
 Takes official MAL exports (from https://myanimelist.net/panel.php?go=export),
 reads your username out of them, fetches your PUBLIC lists for cover URLs,
-and writes one hq.css. Host it somewhere serving text/css, then paste this
-as the FIRST line of the MAL custom CSS box (Modern list style):
+and writes one hq.css. Or skip the files: --user fetches both lists
+directly (they must be Public). Host it somewhere serving text/css,
+then paste this as the FIRST line of the MAL custom CSS box
+(Modern list style):
 
     @import url("HOSTED-URL-GOES-HERE");
 
@@ -104,12 +108,13 @@ def field(obj, name):
                   "((?:(?!" + QUOT + ").)*)" + QUOT, obj)
     if m:
         return m.group(1)
-    m = re.search(QUOT + re.escape(name) + QUOT + ":(-?[\d.]+|true|false|null)", obj)
+    num_pat = r"(-?[\d.]+|true|false|null)"
+    m = re.search(QUOT + re.escape(name) + QUOT + ":" + num_pat, obj)
     return m.group(1) if m else ""
 
 
 def live_paths(text):
-    """(kind, mal_id) -> image path, from a list page."""
+    """(kind, mal_id) -> (image path, title), from a list page."""
     out = {}
     for line in text.splitlines():
         if "data-items=" not in line:
@@ -121,8 +126,10 @@ def live_paths(text):
                 continue
             mid = field(obj, "anime_id" if kind == "anime" else "manga_id")
             path = field(obj, kind + "_image_path").replace("\\/", "/")
+            title = html.unescape(field(obj, kind + "_title")) or "untitled"
+            title = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), title)
             if mid and path:
-                out[(kind, mid)] = path
+                out[(kind, mid)] = (path, title)
     return out
 
 
@@ -154,30 +161,71 @@ def rule(title, frag, hi, lo):
     )
 
 
+def load_page(path):
+    """Page source text from a raw save or a view-source wrapper save."""
+    with open(path, encoding="utf-8") as f:
+        raw = f.read()
+    if "line-content" in raw and "html-attribute-value" in raw:
+        cells = re.findall(r'<td class="line-content">(.*?)</td>', raw, re.S)
+        lines = []
+        for c in cells:
+            c = re.sub(r"<br\s*/?>", "", c)
+            c = re.sub(r"<[^>]+>", "", c)
+            lines.append(c)
+        return html.unescape("\n".join(lines))
+    return raw
+
+
 def main(argv):
-    files, out = [], "hq.css"
+    files, out, user, pages = [], "hq.css", "", {}
     it = iter(argv)
     for a in it:
         if a in ("-o", "--output"):
             out = next(it)
+        elif a == "--user":
+            user = next(it)
+        elif a in ("--anime", "--manga"):
+            pages[a[2:]] = next(it)
         elif a.startswith("-"):
-            sys.exit("usage: make_hq.py animelist.xml mangalist.xml [-o hq.css]")
+            sys.exit("usage: make_hq.py animelist.xml mangalist.xml [-o hq.css]\n"
+                     "   or: make_hq.py --user USERNAME [-o hq.css]\n"
+                     "   or: make_hq.py --anime A.html --manga M.html [-o hq.css]")
         else:
             files.append(a)
-    if not files:
-        sys.exit("usage: make_hq.py animelist.xml mangalist.xml [-o hq.css]")
-    entries, username = [], ""
-    for p in files:
-        u, es = parse_export(p)
-        username = username or u
-        entries.extend(es)
-    if not username:
-        sys.exit("No username in the exports. Re-export from MAL and retry.")
-    kinds = set(k for k, _, _ in entries)
-    paths = {}
-    for kind in ("anime", "manga"):
-        if kind in kinds:
-            paths.update(live_paths(normalize(fetch_list(username, kind))))
+    entries, paths = [], {}
+    if user:
+        for kind in ("anime", "manga"):
+            for (k, mid), (path, title) in live_paths(
+                    normalize(fetch_list(user, kind))).items():
+                entries.append((k, mid, title))
+                paths[(k, mid)] = path
+    elif pages:
+        for kind in ("anime", "manga"):
+            if kind in pages:
+                for (k, mid), (path, title) in live_paths(
+                        normalize(load_page(pages[kind]))).items():
+                    entries.append((k, mid, title))
+                    paths[(k, mid)] = path
+        if not entries:
+            sys.exit("No entries found in those pages. Wrong files?")
+    else:
+        if not files:
+            sys.exit("usage: make_hq.py animelist.xml mangalist.xml [-o hq.css]\n"
+                     "   or: make_hq.py --user USERNAME [-o hq.css]\n"
+                     "   or: make_hq.py --anime A.html --manga M.html [-o hq.css]")
+        username = ""
+        for p in files:
+            u, es = parse_export(p)
+            username = username or u
+            entries.extend(es)
+        if not username:
+            sys.exit("No username in the exports. Re-export from MAL and retry.")
+        kinds = set(k for k, _, _ in entries)
+        for kind in ("anime", "manga"):
+            if kind in kinds:
+                for (k, mid), (path, _t) in live_paths(
+                        normalize(fetch_list(username, kind))).items():
+                    paths[(k, mid)] = path
     rules, seen, missing = [], set(), []
     for kind, mid, title in entries:
         path = paths.get((kind, mid))
@@ -189,7 +237,8 @@ def main(argv):
         if frag in seen:
             continue
         seen.add(frag)
-        rules.append(rule(title, frag, hi, lo))
+        rules.append((frag, rule(title, frag, hi, lo)))
+    rules = [text for _, text in sorted(rules)]
     head = ("/* HQ covers - auto-included via @import.\n"
             "   Regenerated when titles are added. */\n")
     with open(out, "w", encoding="utf-8") as f:
