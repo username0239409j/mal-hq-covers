@@ -1,7 +1,6 @@
 # mal-hq-covers
 
-Give your MyAnimeList list high quality covers with no extensions — for you
-**and** for visitors.
+Give your MyAnimeList list high quality covers with no extensions for you and visitors.
 
 MAL serves list covers as tiny ~192px thumbnails. This script reads your list
 and generates `hq_example.css`: per-title overrides that swap in each cover's
