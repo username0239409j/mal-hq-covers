@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Build hq.css - high-res cover overrides for MAL custom CSS.
+"""Build hq_example.css - high-res cover overrides for MAL custom CSS.
 
 Usage:
-    python make_hq.py animelist.xml mangalist.xml [-o hq.css]
-    python make_hq.py --user THEIR_USERNAME [-o hq.css]
-    python make_hq.py --anime anime.html --manga manga.html [-o hq.css]
+    python make_hq.py animelist.xml mangalist.xml [-o hq_example.css]
+    python make_hq.py --user THEIR_USERNAME [-o hq_example.css]
+    python make_hq.py --anime anime.html --manga manga.html [-o hq_example.css]
 
 Takes official MAL exports (from https://myanimelist.net/panel.php?go=export),
 reads your username out of them, fetches your PUBLIC lists for cover URLs,
-and writes one hq.css. Or skip the files: --user fetches both lists
+and writes one hq_example.css. Or skip the files: --user fetches both lists
 directly (they must be Public). Host it somewhere serving text/css,
 then paste this as the FIRST line of the MAL custom CSS box
 (Modern list style):
@@ -177,7 +177,7 @@ def load_page(path):
 
 
 def main(argv):
-    files, out, user, pages = [], "hq.css", "", {}
+    files, out, user, pages = [], "hq_example.css", "", {}
     it = iter(argv)
     for a in it:
         if a in ("-o", "--output"):
@@ -187,9 +187,9 @@ def main(argv):
         elif a in ("--anime", "--manga"):
             pages[a[2:]] = next(it)
         elif a.startswith("-"):
-            sys.exit("usage: make_hq.py animelist.xml mangalist.xml [-o hq.css]\n"
-                     "   or: make_hq.py --user USERNAME [-o hq.css]\n"
-                     "   or: make_hq.py --anime A.html --manga M.html [-o hq.css]")
+            sys.exit("usage: make_hq.py animelist.xml mangalist.xml [-o hq_example.css]\n"
+                     "   or: make_hq.py --user USERNAME [-o hq_example.css]\n"
+                     "   or: make_hq.py --anime A.html --manga M.html [-o hq_example.css]")
         else:
             files.append(a)
     entries, paths = [], {}
@@ -210,9 +210,9 @@ def main(argv):
             sys.exit("No entries found in those pages. Wrong files?")
     else:
         if not files:
-            sys.exit("usage: make_hq.py animelist.xml mangalist.xml [-o hq.css]\n"
-                     "   or: make_hq.py --user USERNAME [-o hq.css]\n"
-                     "   or: make_hq.py --anime A.html --manga M.html [-o hq.css]")
+            sys.exit("usage: make_hq.py animelist.xml mangalist.xml [-o hq_example.css]\n"
+                     "   or: make_hq.py --user USERNAME [-o hq_example.css]\n"
+                     "   or: make_hq.py --anime A.html --manga M.html [-o hq_example.css]")
         username = ""
         for p in files:
             u, es = parse_export(p)

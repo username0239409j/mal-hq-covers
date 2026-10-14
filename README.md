@@ -3,7 +3,7 @@
 Give your MyAnimeList list high quality covers with no extensions.
 
 MAL serves list covers as tiny ~192px thumbnails. This script reads a
-list and generates `hq.css`: per-title overrides that swap in each cover's
+list and generates `hq_example.css`: per-title overrides that swap in each cover's
 full-size upload. It works for visitors too.
 
 ## Quick start
@@ -17,21 +17,21 @@ list page instead (right-click > View page source, save the file) and run:
 
     python make_hq.py --anime anime.html --manga manga.html
 
-Either way you get an `hq.css` in the current folder. Re-run the python script whenever
+Either way you get an `hq_example.css` in the current folder. Re-run the python script whenever
 titles are added; stale entries are harmless (rules simply stop matching).
 
 ## Host it
 
 The file must be reachable over HTTPS **as `text/css`**. Easiest free path:
 
-1. Fork this repo (or make your own public repo) and push your `hq.css`.
+1. Fork this repo (or make your own public repo) and push your `hq_example.css`.
 2. Use it through jsDelivr (correct MIME type, global CDN, free):
 
-    https://cdn.jsdelivr.net/gh/YOURNAME/REPO@main/hq.css
+    https://cdn.jsdelivr.net/gh/YOURNAME/REPO@main/hq_example.css
 
 3. After updating the file, open this once to bust the cache:
 
-    https://purge.jsdelivr.net/gh/YOURNAME/REPO@main/hq.css
+    https://purge.jsdelivr.net/gh/YOURNAME/REPO@main/hq_example.css
 
 Alternatives that also work: Cloudflare R2, Netlify, Vercel - anything
 serving static files as `text/css`.
