@@ -114,7 +114,7 @@ def field(obj, name):
 
 
 def live_paths(text):
-    """(kind, mal_id) -> (image path, title), from a list page."""
+    """(kind, mal_id) -> (image path, title, english title), from a list page."""
     out = {}
     for line in text.splitlines():
         if "data-items=" not in line:
@@ -128,8 +128,10 @@ def live_paths(text):
             path = field(obj, kind + "_image_path").replace("\\/", "/")
             title = html.unescape(field(obj, kind + "_title")) or "untitled"
             title = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), title)
+            eng = html.unescape(field(obj, kind + "_title_eng"))
+            eng = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), eng)
             if mid and path:
-                out[(kind, mid)] = (path, title)
+                out[(kind, mid)] = (path, title, eng)
     return out
 
 
@@ -147,8 +149,11 @@ def fragment(lq_path):
     return "/" + tail
 
 
-def rule(title, frag, hi, lo):
+def rule(title, frag, hi, lo, eng=""):
     safe = re.sub(r"[^\x00-\x7F]+", "", str(title)).strip() or "untitled"
+    eng_safe = re.sub(r"[^\x00-\x7F]+", "", str(eng or "")).strip()
+    if eng_safe and eng_safe.lower() != safe.lower():
+        safe += " / " + eng_safe
     return (
         "/* HQ cover: " + safe + " */\n"
         ".list-table .data.image:has(img[src*=\"" + frag + "\"]) "
@@ -195,17 +200,17 @@ def main(argv):
     entries, paths = [], {}
     if user:
         for kind in ("anime", "manga"):
-            for (k, mid), (path, title) in live_paths(
+            for (k, mid), (path, title, eng) in live_paths(
                     normalize(fetch_list(user, kind))).items():
-                entries.append((k, mid, title))
-                paths[(k, mid)] = path
+                entries.append((k, mid, title, eng))
+                paths[(k, mid)] = (path, eng)
     elif pages:
         for kind in ("anime", "manga"):
             if kind in pages:
-                for (k, mid), (path, title) in live_paths(
+                for (k, mid), (path, title, eng) in live_paths(
                         normalize(load_page(pages[kind]))).items():
-                    entries.append((k, mid, title))
-                    paths[(k, mid)] = path
+                    entries.append((k, mid, title, eng))
+                    paths[(k, mid)] = (path, eng)
         if not entries:
             sys.exit("No entries found in those pages. Wrong files?")
     else:
@@ -223,21 +228,24 @@ def main(argv):
         kinds = set(k for k, _, _ in entries)
         for kind in ("anime", "manga"):
             if kind in kinds:
-                for (k, mid), (path, _t) in live_paths(
+                for (k, mid), (path, _t, eng) in live_paths(
                         normalize(fetch_list(username, kind))).items():
-                    paths[(k, mid)] = path
+                    paths[(k, mid)] = (path, eng)
     rules, seen, missing = [], set(), []
-    for kind, mid, title in entries:
-        path = paths.get((kind, mid))
-        if not path:
+    for entry in entries:
+        kind, mid, title = entry[0], entry[1], entry[2]
+        eng = entry[3] if len(entry) > 3 else ""
+        got = paths.get((kind, mid))
+        if not got:
             missing.append("%s %s" % (kind, title))
             continue
+        path, live_eng = got
         hi, lo = hq_pair(path)
         frag = fragment(path)
         if frag in seen:
             continue
         seen.add(frag)
-        rules.append((frag, rule(title, frag, hi, lo)))
+        rules.append((frag, rule(title, frag, hi, lo, live_eng or eng)))
     rules = [text for _, text in sorted(rules)]
     head = ("/* HQ covers - auto-included via @import.\n"
             "   Regenerated when titles are added. */\n")
