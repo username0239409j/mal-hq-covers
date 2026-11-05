@@ -32,6 +32,10 @@
 .list-table .data.image:has(img[src*="/anime/1104/91793."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1104/91793l.jpg"), url("https://cdn.myanimelist.net/images/anime/1104/91793.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
 .list-table .data.image:has(img[src*="/anime/1104/91793."]) img{opacity:0 !important;}
 
+/* HQ cover: Summertime Render / Summer Time Rendering */
+.list-table .data.image:has(img[src*="/anime/1120/120796."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1120/120796l.jpg"), url("https://cdn.myanimelist.net/images/anime/1120/120796.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
+.list-table .data.image:has(img[src*="/anime/1120/120796."]) img{opacity:0 !important;}
+
 /* HQ cover: Naruto */
 .list-table .data.image:has(img[src*="/anime/1141/142503."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1141/142503l.jpg"), url("https://cdn.myanimelist.net/images/anime/1141/142503.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
 .list-table .data.image:has(img[src*="/anime/1141/142503."]) img{opacity:0 !important;}
@@ -55,6 +59,10 @@
 /* HQ cover: Overlord II */
 .list-table .data.image:has(img[src*="/anime/1212/113415."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1212/113415l.jpg"), url("https://cdn.myanimelist.net/images/anime/1212/113415.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
 .list-table .data.image:has(img[src*="/anime/1212/113415."]) img{opacity:0 !important;}
+
+/* HQ cover: Re:Zero kara Hajimeru Isekai Seikatsu - Hyouketsu no Kizuna / Re:ZERO -Starting Life in Another World- The Frozen Bond */
+.list-table .data.image:has(img[src*="/anime/1238/104023."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1238/104023l.jpg"), url("https://cdn.myanimelist.net/images/anime/1238/104023.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
+.list-table .data.image:has(img[src*="/anime/1238/104023."]) img{opacity:0 !important;}
 
 /* HQ cover: Bleach: Sennen Kessen-hen - Kashin-tan / Bleach: Thousand-Year Blood War - The Calamity */
 .list-table .data.image:has(img[src*="/anime/1275/158595."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1275/158595l.jpg"), url("https://cdn.myanimelist.net/images/anime/1275/158595.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
@@ -83,6 +91,10 @@
 /* HQ cover: Great Pretender */
 .list-table .data.image:has(img[src*="/anime/1418/107954."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1418/107954l.jpg"), url("https://cdn.myanimelist.net/images/anime/1418/107954.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
 .list-table .data.image:has(img[src*="/anime/1418/107954."]) img{opacity:0 !important;}
+
+/* HQ cover: Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season / Re:ZERO -Starting Life in Another World- Season 2 */
+.list-table .data.image:has(img[src*="/anime/1444/108005."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1444/108005l.jpg"), url("https://cdn.myanimelist.net/images/anime/1444/108005.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
+.list-table .data.image:has(img[src*="/anime/1444/108005."]) img{opacity:0 !important;}
 
 /* HQ cover: Boku no Hero Academia 6th Season / My Hero Academia Season 6 */
 .list-table .data.image:has(img[src*="/anime/1483/126005."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1483/126005l.jpg"), url("https://cdn.myanimelist.net/images/anime/1483/126005.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
@@ -127,6 +139,10 @@
 /* HQ cover: Bleach: Sennen Kessen-hen - Soukoku-tan / Bleach: Thousand-Year Blood War - The Conflict */
 .list-table .data.image:has(img[src*="/anime/1595/144074."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1595/144074l.jpg"), url("https://cdn.myanimelist.net/images/anime/1595/144074.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
 .list-table .data.image:has(img[src*="/anime/1595/144074."]) img{opacity:0 !important;}
+
+/* HQ cover: Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season Part 2 / Re:ZERO -Starting Life in Another World- Season 2 Part 2 */
+.list-table .data.image:has(img[src*="/anime/1724/117421."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1724/117421l.jpg"), url("https://cdn.myanimelist.net/images/anime/1724/117421.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
+.list-table .data.image:has(img[src*="/anime/1724/117421."]) img{opacity:0 !important;}
 
 /* HQ cover: Mushoku Tensei II: Isekai Ittara Honki Dasu Part 2 / Mushoku Tensei: Jobless Reincarnation Season 2 Part 2 */
 .list-table .data.image:has(img[src*="/anime/1876/141251."]) .link{background-image:url("https://cdn.myanimelist.net/images/anime/1876/141251l.jpg"), url("https://cdn.myanimelist.net/images/anime/1876/141251.jpg") !important;background-size:cover !important;background-position:center center !important;background-repeat:no-repeat !important;}
